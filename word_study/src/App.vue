@@ -1,0 +1,156 @@
+<template>
+  <div id="app">
+    <!-- 添加一个头部 -->
+    <header>
+      <h1>Word Journeyman</h1>
+      <nav>
+        <a href="#"></a>
+        <contact-us></contact-us>
+      </nav>
+    </header>
+
+    <!-- 添加侧边栏 -->
+    <div class="sidebar">
+      <h2>单词探索历程</h2>
+      <ul>
+        <li v-for="word in browsedWords" :key="word" @click="jumpToWord(word)">
+          {{ word }}
+        </li>
+      </ul>
+     
+    </div>
+
+    <div class="center-container">
+      <!-- 搜索栏 -->
+      <div class="search-bar">
+        <input
+          v-model="searchTerm"
+          type="text"
+          placeholder="搜索单词..."
+          @keyup.enter="searchWord"
+        />
+        <button @click="searchWord">搜索</button>
+        <p>{{ searchMessage }}</p>
+        <!-- 新增一行来显示searchMessage -->
+      </div>
+
+      <!-- 单词卡片 -->
+      <div
+        id="card"
+        class="card"
+        @mouseleave="startCountdown"
+        @mouseenter="stopCountdown"
+      >
+        <!-- 卡片内容 -->
+        <h1>{{ words[currentWordIndex].word }}</h1>
+        <button @click="showDefinition" :disabled="isDefinitionVisible">
+          显示定义
+        </button>
+        <p v-show="isDefinitionVisible">
+          {{ words[currentWordIndex].definition }}
+        </p>
+        <button @click="nextWord">下一个单词</button>
+
+        <!-- 小字提醒 -->
+        <p v-if="focusLostCountdown > 0" class="countdown-message">
+          焦点将在 {{ focusLostCountdown }} 秒后消失
+        </p>
+      </div>
+
+      <!-- 聊天框组件 -->
+      <chat-box></chat-box>
+    </div>
+
+    <!-- 添加一个底部 -->
+    <footer>
+      <p>©2023 Word Journeyman</p>
+    </footer>
+    
+  </div>
+</template>
+
+
+<script>
+import ContactUs from "./components/ContactUs.vue"; // 确保这里的路径是正确的
+import ChatBox from "./components/ChatBox.vue"; // 引入你的聊天框组件
+export default {
+  components: {
+    "contact-us": ContactUs, // 在这里注册你的组件
+    "chat-box": ChatBox, // 注册你的聊天框组件
+  },
+  data() {
+    return {
+      words: [
+        { word: "apple", definition: "一种常见的水果" },
+        { word: "banana", definition: "一种常见的黄色水果" },
+        { word: "cat", definition: "一种家养的小型猫科动物" },
+        { word: "dog", definition: "一种家养的哺乳动物" },
+        { word: "elephant", definition: "一种大型陆生哺乳动物" },
+        { word: "fox", definition: "一种小型犬科动物" },
+        { word: "grape", definition: "一种常见的浆果" },
+        { word: "horse", definition: "一种大型哺乳动物" },
+        { word: "iguana", definition: "一种大型蜥蜴" },
+        { word: "jaguar", definition: "一种大型猫科动物" },
+      ],
+      currentWordIndex: 0,
+      isDefinitionVisible: false,
+      searchTerm: "",
+      focusLostCountdown: 0,
+      countdownInterval: null, // 新增一个变量来存储倒计时的interval
+      browsedWords: [], // 新增一个变量来存储已浏览的单词
+    };
+  },
+  methods: {
+    showDefinition() {
+      this.isDefinitionVisible = true;
+    },
+    nextWord() {
+      const currentWord = this.words[this.currentWordIndex].word;
+      if (!this.browsedWords.includes(currentWord)) {
+        // 如果当前单词不在已浏览单词列表中，就添加到列表
+        this.browsedWords.push(currentWord);
+      }
+      this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
+      this.isDefinitionVisible = false;
+    },
+
+    searchWord() {
+      const index = this.words.findIndex(
+        (word) => word.word === this.searchTerm
+      );
+      if (index !== -1) {
+        this.currentWordIndex = index;
+        this.isDefinitionVisible = false;
+        this.searchMessage = ""; // 如果找到了单词，清空searchMessage
+      } else {
+        this.searchMessage = "未找到该单词"; // 如果未找到单词，更新searchMessage
+      }
+    },
+    startCountdown() {
+      this.focusLostCountdown = 5;
+      this.countdownInterval = setInterval(() => {
+        if (this.focusLostCountdown > 0) {
+          this.focusLostCountdown--;
+        } else {
+          clearInterval(this.countdownInterval);
+        }
+      }, 1000);
+    },
+    stopCountdown() {
+      clearInterval(this.countdownInterval);
+      this.focusLostCountdown = 0;
+    },
+    jumpToWord(word) {
+      this.currentWordIndex = this.words.findIndex((w) => w.word === word);
+    },
+    clearBrowsedWords() {
+      this.browsedWords = [];
+    },
+  },
+};
+</script>
+
+
+<style scoped>
+@import url("../css/styles.css");
+</style>
