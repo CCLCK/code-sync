@@ -22,14 +22,24 @@
     <div class="center-container">
       <!-- 搜索栏 -->
       <div class="search-bar">
-        <input v-model="searchTerm" type="text" placeholder="搜索单词..." @keyup.enter="searchWord" />
+        <input
+          v-model="searchTerm"
+          type="text"
+          placeholder="搜索单词..."
+          @keyup.enter="searchWord"
+        />
         <button @click="searchWord">搜索</button>
         <p>{{ searchMessage }}</p>
         <!-- 新增一行来显示searchMessage -->
       </div>
 
       <!-- 单词卡片 -->
-      <div id="card" class="card" @mouseleave="startCountdown" @mouseenter="stopCountdown">
+      <div
+        id="card"
+        class="card"
+        @mouseleave="startCountdown"
+        @mouseenter="stopCountdown"
+      >
         <!-- 卡片内容 -->
         <h1>{{ words[currentWordIndex].word }}</h1>
 
@@ -38,7 +48,11 @@
           {{ words[currentWordIndex].definition }}
         </p>
         <div class="card-buttons">
-          <button class="button" @click="showDefinition" :disabled="isDefinitionVisible">
+          <button
+            class="button"
+            @click="showDefinition"
+            :disabled="isDefinitionVisible"
+          >
             显示定义
           </button>
           <button class="button" @click="nextWord">下一个单词</button>
@@ -96,6 +110,21 @@ export default {
     showDefinition() {
       this.isDefinitionVisible = true;
     },
+    created() {
+      const word = this.$route.params.word;
+      if (word) {
+        const index = this.words.findIndex((w) => w.word === word);
+        if (index >= 0) {
+          this.currentWordIndex = index;
+          if (!this.browsedWords.includes(word)) {
+            this.browsedWords.push(word);
+          }
+        }
+      }
+    },
+
+    // ...
+
     nextWord() {
       const currentWord = this.words[this.currentWordIndex].word;
       if (!this.browsedWords.includes(currentWord)) {
@@ -104,6 +133,20 @@ export default {
       }
       this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
       this.isDefinitionVisible = false;
+      this.$router.push(`/words/${this.words[this.currentWordIndex].word}`);
+      if (!this.browsedWords.includes(this.words[this.currentWordIndex].word)) {
+        this.browsedWords.push(this.words[this.currentWordIndex].word);
+      }
+    },
+
+    // ...
+
+    jumpToWord(word) {
+      this.currentWordIndex = this.words.findIndex((w) => w.word === word);
+      this.$router.push(`/words/${word}`);
+      if (!this.browsedWords.includes(word)) {
+        this.browsedWords.push(word);
+      }
     },
 
     searchWord() {
@@ -114,10 +157,17 @@ export default {
         this.currentWordIndex = index;
         this.isDefinitionVisible = false;
         this.searchMessage = ""; // 如果找到了单词，清空searchMessage
+        this.$router.push(`/words/${this.words[this.currentWordIndex].word}`); // 更新URL
+        if (
+          !this.browsedWords.includes(this.words[this.currentWordIndex].word)
+        ) {
+          this.browsedWords.push(this.words[this.currentWordIndex].word); // 添加单词到browsedWords列表
+        }
       } else {
         this.searchMessage = "未找到该单词"; // 如果未找到单词，更新searchMessage
       }
     },
+
     startCountdown() {
       this.focusLostCountdown = 5;
       this.countdownInterval = setInterval(() => {
@@ -132,9 +182,7 @@ export default {
       clearInterval(this.countdownInterval);
       this.focusLostCountdown = 0;
     },
-    jumpToWord(word) {
-      this.currentWordIndex = this.words.findIndex((w) => w.word === word);
-    },
+
     clearBrowsedWords() {
       this.browsedWords = [];
     },
