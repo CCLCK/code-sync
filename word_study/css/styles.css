@@ -201,7 +201,7 @@ nav {
     justify-content: space-between;
 }
   
-  button {
+.card-buttons  .button {
     flex-basis: 48%; 
     padding: 10px;
     border: none;

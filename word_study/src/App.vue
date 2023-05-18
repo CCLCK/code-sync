@@ -22,24 +22,14 @@
     <div class="center-container">
       <!-- 搜索栏 -->
       <div class="search-bar">
-        <input
-          v-model="searchTerm"
-          type="text"
-          placeholder="搜索单词..."
-          @keyup.enter="searchWord"
-        />
+        <input v-model="searchTerm" type="text" placeholder="搜索单词..." @keyup.enter="searchWord" />
         <button @click="searchWord">搜索</button>
         <p>{{ searchMessage }}</p>
         <!-- 新增一行来显示searchMessage -->
       </div>
 
       <!-- 单词卡片 -->
-      <div
-        id="card"
-        class="card"
-        @mouseleave="startCountdown"
-        @mouseenter="stopCountdown"
-      >
+      <div id="card" class="card" @mouseleave="startCountdown" @mouseenter="stopCountdown">
         <!-- 卡片内容 -->
         <h1>{{ words[currentWordIndex].word }}</h1>
 
@@ -48,11 +38,7 @@
           {{ words[currentWordIndex].definition }}
         </p>
         <div class="card-buttons">
-          <button
-            class="button"
-            @click="showDefinition"
-            :disabled="isDefinitionVisible"
-          >
+          <button class="button" @click="showDefinition" :disabled="isDefinitionVisible">
             显示定义
           </button>
           <button class="button" @click="nextWord">下一个单词</button>

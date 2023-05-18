@@ -242,7 +242,7 @@ textarea {
   }
 }
 
-.send-button {
+.chat-input .send-button {
     background-color: #007bff;
     color: white;
     border: none;
