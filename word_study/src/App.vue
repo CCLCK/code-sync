@@ -17,7 +17,6 @@
           {{ word }}
         </li>
       </ul>
-     
     </div>
 
     <div class="center-container">
@@ -43,13 +42,21 @@
       >
         <!-- 卡片内容 -->
         <h1>{{ words[currentWordIndex].word }}</h1>
-        <button @click="showDefinition" :disabled="isDefinitionVisible">
-          显示定义
-        </button>
+
+        <!-- 定义显示 -->
         <p v-show="isDefinitionVisible">
           {{ words[currentWordIndex].definition }}
         </p>
-        <button @click="nextWord">下一个单词</button>
+        <div class="card-buttons">
+          <button
+            class="button"
+            @click="showDefinition"
+            :disabled="isDefinitionVisible"
+          >
+            显示定义
+          </button>
+          <button class="button" @click="nextWord">下一个单词</button>
+        </div>
 
         <!-- 小字提醒 -->
         <p v-if="focusLostCountdown > 0" class="countdown-message">
@@ -65,7 +72,6 @@
     <footer>
       <p>©2023 Word Journeyman</p>
     </footer>
-    
   </div>
 </template>
 

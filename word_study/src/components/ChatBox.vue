@@ -94,9 +94,11 @@ export default {
 </script>
   
   <style scoped>
+
+  
 .chat-box-container {
   position: fixed;
-  right: 20px;
+  right: 0px;
   bottom: 80px; /* 调整适应右边的位置 */
   z-index: 1000;
 }
@@ -213,22 +215,7 @@ textarea {
   font-size: 14px;
 }
 
-.send-button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  padding: 8px 15px;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  margin-left: 10px;
-  cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 
-.send-button:hover {
-  background-color: #0056b3;
-}
 
 .chat-icon {
   width: 40px;
@@ -249,8 +236,28 @@ textarea {
 
 @media (max-width: 400px) {
   .chat-box {
-    width: 90%;
+    
+    width: 40%;
+   
   }
 }
+
+.send-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    padding: 8px 15px;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    margin-left: 10px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .send-button:hover {
+    background-color: #0056b3;
+  }
+  
 </style>
   
