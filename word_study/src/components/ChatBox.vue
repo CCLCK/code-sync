@@ -7,10 +7,10 @@
       <div class="chat-content">
         <div v-for="(message, index) in messages" :key="index" class="message">
           <div v-if="message.sender === 'user'" class="user-message">
-            <pre>{{ message.text }}</pre>
+            <div>{{ message.text }}</div> <!-- Modified this line -->
           </div>
           <div v-else class="bot-message">
-            <pre>{{ message.text }}</pre>
+            <div>{{ message.text }}</div> <!-- And this line -->
           </div>
         </div>
       </div>
@@ -31,6 +31,7 @@
     </div>
   </div>
 </template>
+
   
   <script>
 import axios from "axios";

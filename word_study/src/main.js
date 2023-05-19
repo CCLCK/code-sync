@@ -8,6 +8,7 @@ import Toast from "vue-toast-notification";
 import 'vue-toast-notification/dist/theme-default.css';
 import '@fortawesome/fontawesome-free/css/all.css'
 
+
 library.add(fas);  // 将所有 solid 图标添加到库中
 
 // 创建路由配置

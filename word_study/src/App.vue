@@ -31,37 +31,41 @@
         <button @click="searchWord">搜索</button>
         <p>{{ searchMessage }}</p>
         <!-- 新增一行来显示searchMessage -->
-      </div>
 
-      <!-- 单词卡片 -->
-      <div
-        id="card"
-        class="card"
-        @mouseleave="startCountdown"
-        @mouseenter="stopCountdown"
-      >
-        <!-- 卡片内容 -->
-        <h1>{{ words[currentWordIndex].word }}</h1>
+        <!-- 单词卡片 -->
+        <div
+          id="card"
+          class="card"
+          @mouseleave="startCountdown"
+          @mouseenter="stopCountdown"
+        >
+          <!-- 卡片内容 -->
+          <h1>{{ words[currentWordIndex].word }}</h1>
 
-        <!-- 定义显示 -->
-        <p v-show="isDefinitionVisible">
-          {{ words[currentWordIndex].definition }}
-        </p>
-        <div class="card-buttons">
-          <button
-            class="button"
-            @click="showDefinition"
-            :disabled="isDefinitionVisible"
-          >
-            显示定义
-          </button>
-          <button class="button" @click="nextWord">下一个单词</button>
+          <!-- 定义显示 -->
+          <p v-show="isDefinitionVisible">
+            {{ words[currentWordIndex].definition }}
+          </p>
+          <p v-show="isDefinitionVisible">
+            <strong>例句：</strong> {{ words[currentWordIndex].example }}
+          </p>
+
+          <div class="card-buttons">
+            <button
+              class="button"
+              @click="showDefinition"
+              :disabled="isDefinitionVisible"
+            >
+              显示定义
+            </button>
+            <button class="button" @click="nextWord">下一个单词</button>
+          </div>
+
+          <!-- 小字提醒 -->
+          <p v-if="focusLostCountdown > 0" class="countdown-message">
+            焦点将在 {{ focusLostCountdown }} 秒后消失
+          </p>
         </div>
-
-        <!-- 小字提醒 -->
-        <p v-if="focusLostCountdown > 0" class="countdown-message">
-          焦点将在 {{ focusLostCountdown }} 秒后消失
-        </p>
       </div>
 
       <!-- 聊天框组件 -->
@@ -79,6 +83,8 @@
 <script>
 import ContactUs from "./components/ContactUs.vue"; // 确保这里的路径是正确的
 import ChatBox from "./components/ChatBox.vue"; // 引入你的聊天框组件
+import axios from "axios";
+
 export default {
   components: {
     "contact-us": ContactUs, // 在这里注册你的组件
@@ -106,24 +112,38 @@ export default {
       browsedWords: [], // 新增一个变量来存储已浏览的单词
     };
   },
+  created() {
+    const word = this.$route.params.word;
+    if (word) {
+      this.jumpToWord(word);
+    }
+  },
   methods: {
     showDefinition() {
       this.isDefinitionVisible = true;
     },
-    created() {
-      const word = this.$route.params.word;
-      if (word) {
-        const index = this.words.findIndex((w) => w.word === word);
-        if (index >= 0) {
-          this.currentWordIndex = index;
-          if (!this.browsedWords.includes(word)) {
-            this.browsedWords.push(word);
+    fetchWord(word) {
+      axios
+        .get(`http://localhost:5000/words/${word}`)
+        .then((response) => {
+          console.log(response.data);
+          const index = this.words.findIndex((w) => w.word === word);
+          if (index >= 0) {
+            this.words[index].definition = response.data.definition;
+            this.words[index].example = response.data.example; // 新增的例句
+          } else {
+            this.words.push({
+              word: response.data.word,
+              definition: response.data.definition,
+              example: response.data.example, // 新增的例句
+            });
+            this.currentWordIndex = this.words.length - 1;
           }
-        }
-      }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     },
-
-    // ...
 
     nextWord() {
       const currentWord = this.words[this.currentWordIndex].word;
@@ -134,40 +154,23 @@ export default {
       this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
       this.isDefinitionVisible = false;
       this.$router.push(`/words/${this.words[this.currentWordIndex].word}`);
-      if (!this.browsedWords.includes(this.words[this.currentWordIndex].word)) {
-        this.browsedWords.push(this.words[this.currentWordIndex].word);
-      }
+      this.fetchWord(this.words[this.currentWordIndex].word);
     },
 
     // ...
 
     jumpToWord(word) {
-      this.currentWordIndex = this.words.findIndex((w) => w.word === word);
-      this.$router.push(`/words/${word}`);
-      if (!this.browsedWords.includes(word)) {
-        this.browsedWords.push(word);
+      const index = this.words.findIndex((w) => w.word === word);
+      if (index !== -1) {
+        this.currentWordIndex = index;
       }
+      this.$router.push(`/words/${word}`);
+      this.fetchWord(word);
     },
 
     searchWord() {
-      const index = this.words.findIndex(
-        (word) => word.word === this.searchTerm
-      );
-      if (index !== -1) {
-        this.currentWordIndex = index;
-        this.isDefinitionVisible = false;
-        this.searchMessage = ""; // 如果找到了单词，清空searchMessage
-        this.$router.push(`/words/${this.words[this.currentWordIndex].word}`); // 更新URL
-        if (
-          !this.browsedWords.includes(this.words[this.currentWordIndex].word)
-        ) {
-          this.browsedWords.push(this.words[this.currentWordIndex].word); // 添加单词到browsedWords列表
-        }
-      } else {
-        this.searchMessage = "未找到该单词"; // 如果未找到单词，更新searchMessage
-      }
+      this.fetchWord(this.searchTerm);
     },
-
     startCountdown() {
       this.focusLostCountdown = 5;
       this.countdownInterval = setInterval(() => {
