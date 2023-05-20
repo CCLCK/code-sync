@@ -63,7 +63,7 @@ export default {
 
       // 发送请求到Flask服务器
       axios
-        .post("http://localhost:5000/api/chat", { message: userInput })
+        .post("http://localhost:5200/api/chat", { message: userInput })
         .then((response) => {
           // 服务器响应成功
           this.messages.push({ sender: "bot", text: response.data.message });

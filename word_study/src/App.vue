@@ -31,42 +31,30 @@
         <button @click="searchWord">搜索</button>
         <p>{{ searchMessage }}</p>
         <!-- 新增一行来显示searchMessage -->
-
-        <!-- 单词卡片 -->
-        <div
-          id="card"
-          class="card"
-          @mouseleave="startCountdown"
-          @mouseenter="stopCountdown"
-        >
-          <!-- 卡片内容 -->
-          <h1>{{ words[currentWordIndex].word }}</h1>
-
-          <!-- 定义显示 -->
-          <p v-show="isDefinitionVisible">
-            {{ words[currentWordIndex].definition }}
-          </p>
-          <p v-show="isDefinitionVisible">
-            <strong>例句：</strong> {{ words[currentWordIndex].example }}
-          </p>
-
-          <div class="card-buttons">
-            <button
-              class="button"
-              @click="showDefinition"
-              :disabled="isDefinitionVisible"
-            >
-              显示定义
-            </button>
-            <button class="button" @click="nextWord">下一个单词</button>
-          </div>
-
-          <!-- 小字提醒 -->
-          <p v-if="focusLostCountdown > 0" class="countdown-message">
-            焦点将在 {{ focusLostCountdown }} 秒后消失
-          </p>
-        </div>
       </div>
+      <!-- 单词卡片 -->
+      <word-card
+  v-if="words.length > 0"
+  :word="words[currentWordIndex]"
+  :isDefinitionVisible="isDefinitionVisible"
+  :showDefinition="showDefinition"
+  :nextWord="nextWord"
+  :startCountdown="startCountdown"
+  :stopCountdown="stopCountdown"
+  :focusLostCountdown="focusLostCountdown"
+>
+</word-card>
+
+<!-- 如果words数组为空，就显示一个加载中的提示 -->
+<div v-else class="loading">
+  数据加载中<span class="dots">...</span>
+</div>
+
+
+      <refresh-button
+        class="refresh-button"
+        @refresh="getNewWords"
+      ></refresh-button>
 
       <!-- 聊天框组件 -->
       <chat-box></chat-box>
@@ -83,33 +71,26 @@
 <script>
 import ContactUs from "./components/ContactUs.vue"; // 确保这里的路径是正确的
 import ChatBox from "./components/ChatBox.vue"; // 引入你的聊天框组件
+import RefreshButton from "./components/RefreshButton.vue";
 import axios from "axios";
-
+import WordCard from "./components/WordCard.vue";
 export default {
   components: {
     "contact-us": ContactUs, // 在这里注册你的组件
     "chat-box": ChatBox, // 注册你的聊天框组件
+    RefreshButton,
+    WordCard,
   },
   data() {
     return {
-      words: [
-        { word: "apple", definition: "一种常见的水果" },
-        { word: "banana", definition: "一种常见的黄色水果" },
-        { word: "cat", definition: "一种家养的小型猫科动物" },
-        { word: "dog", definition: "一种家养的哺乳动物" },
-        { word: "elephant", definition: "一种大型陆生哺乳动物" },
-        { word: "fox", definition: "一种小型犬科动物" },
-        { word: "grape", definition: "一种常见的浆果" },
-        { word: "horse", definition: "一种大型哺乳动物" },
-        { word: "iguana", definition: "一种大型蜥蜴" },
-        { word: "jaguar", definition: "一种大型猫科动物" },
-      ],
+      words: [],
       currentWordIndex: 0,
       isDefinitionVisible: false,
       searchTerm: "",
       focusLostCountdown: 0,
       countdownInterval: null, // 新增一个变量来存储倒计时的interval
       browsedWords: [], // 新增一个变量来存储已浏览的单词
+      newWords: [], // 新的一组单词
     };
   },
   created() {
@@ -117,6 +98,14 @@ export default {
     if (word) {
       this.jumpToWord(word);
     }
+    axios
+      .get("http://localhost:5300/random-words")
+      .then((response) => {
+        this.words = response.data;
+      })
+      .catch((error) => {
+        console.error("Error fetching random words:", error);
+      });
   },
   methods: {
     showDefinition() {
@@ -124,24 +113,32 @@ export default {
     },
     fetchWord(word) {
       axios
-        .get(`http://localhost:5000/words/${word}`)
+        .get(`http://localhost:5100/words/${word}`)
         .then((response) => {
           console.log(response.data);
           const index = this.words.findIndex((w) => w.word === word);
           if (index >= 0) {
             this.words[index].definition = response.data.definition;
-            this.words[index].example = response.data.example; // 新增的例句
+            this.words[index].example = response.data.example;
+            this.words[index].example_translation =
+              response.data.example_translation; // 新增的例句翻译
+            this.currentWordIndex = index;
           } else {
             this.words.push({
               word: response.data.word,
               definition: response.data.definition,
-              example: response.data.example, // 新增的例句
+              example: response.data.example,
+              example_translation: response.data.example_translation, // 新增的例句翻译
             });
             this.currentWordIndex = this.words.length - 1;
           }
+
+          console.log(this.words[index].word);
+          console.log(this.currentWordIndex);
+          // this.showDefinition(); // 显示搜索到的单词定义
         })
         .catch((error) => {
-          console.error(error);
+          console.error("Error fetching word:", error);
         });
     },
 
@@ -170,6 +167,7 @@ export default {
 
     searchWord() {
       this.fetchWord(this.searchTerm);
+      this.showDefinition();
     },
     startCountdown() {
       this.focusLostCountdown = 5;
@@ -186,14 +184,25 @@ export default {
       this.focusLostCountdown = 0;
     },
 
-    clearBrowsedWords() {
-      this.browsedWords = [];
+    getNewWords() {
+      axios
+        .get("http://localhost:5300/random-words")
+        .then((response) => {
+          this.newWords = response.data;
+          this.words = this.newWords; // 更新单词列表
+        })
+        .catch((error) => {
+          console.error("Error fetching new words:", error);
+        });
     },
   },
 };
+
 </script>
 
 
 <style scoped>
+@import url("../css/loading.css");
 @import url("../css/styles.css");
+
 </style>

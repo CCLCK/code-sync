@@ -52,6 +52,7 @@ nav {
     bottom: 0;
     width: calc(18vw);
     overflow-y: auto;
+    overflow-x: scroll;
     background-color: #f9f9f9;
     padding: 0 20px 20px 20px; /* 上右下左的内边距，左侧内边距设为0 */
     box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
@@ -104,6 +105,8 @@ nav {
     align-items: center;
     justify-content: flex-start; 
     height: calc(100vh - 120px);
+    overflow-y: auto;
+    overflow-x: scroll;
   }
   
 .center-container .search-bar input,
@@ -163,7 +166,7 @@ nav {
   background-color: #f0f8ff;
   color: #333333;
   width: calc(30vw);
-  height: calc(36vh);
+  height: calc(46vh);
   border-radius: 20px;
   box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -232,4 +235,23 @@ footer {
     position: fixed;
     right: 20px;
     bottom: 20px;
+  }
+  @media screen and (max-width: 768px) {
+    .sidebar {
+      display: none;
+    }
+    .chat-box-container {
+      display: none;
+    }
+    .center-container {
+      margin-left: 0;
+    }
+    .card {
+      width: calc(80vw);
+      height: calc(70vh);
+    }
+    .search-bar input
+    {
+      width: calc(50vw);
+    }
   }
