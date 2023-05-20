@@ -135,9 +135,10 @@ export default {
         this.currentWordIndex = this.words.length - 1;
       }
 
-      console.log(this.words[index].word);
-      console.log(this.currentWordIndex);
-
+      // console.log(this.words[index].word);
+      // console.log(response.data.word);
+      console.log(response.data);
+      console.log(showDefinitionImmediately);
       // Only show definition if we got a valid response and we should show definition immediately.
       if (response.data && response.data.word && showDefinitionImmediately) {
         this.showDefinition(); // 显示搜索到的单词定义
