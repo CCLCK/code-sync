@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, abort
+from flask import Flask, jsonify, abort, make_response
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
@@ -25,6 +25,10 @@ def get_word(word):
         "example": word_object.example,
         "example_translation": word_object.example_translation
     })
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Word not found'}), 404)
 
 if __name__ == '__main__':
     app.run(port=5100,debug=True)

@@ -111,48 +111,59 @@ export default {
     showDefinition() {
       this.isDefinitionVisible = true;
     },
-    fetchWord(word) {
-      axios
-        .get(`http://localhost:5100/words/${word}`)
-        .then((response) => {
-          console.log(response.data);
-          const index = this.words.findIndex((w) => w.word === word);
-          if (index >= 0) {
-            this.words[index].definition = response.data.definition;
-            this.words[index].example = response.data.example;
-            this.words[index].example_translation =
-              response.data.example_translation; // 新增的例句翻译
-            this.currentWordIndex = index;
-          } else {
-            this.words.push({
-              word: response.data.word,
-              definition: response.data.definition,
-              example: response.data.example,
-              example_translation: response.data.example_translation, // 新增的例句翻译
-            });
-            this.currentWordIndex = this.words.length - 1;
-          }
-
-          console.log(this.words[index].word);
-          console.log(this.currentWordIndex);
-          // this.showDefinition(); // 显示搜索到的单词定义
-        })
-        .catch((error) => {
-          console.error("Error fetching word:", error);
+    fetchWord(word, showDefinitionImmediately = false) {
+  axios
+    .get(`http://localhost:5100/words/${word}`)
+    .then((response) => {
+      console.log(response.data);
+      const index = this.words.findIndex((w) => w.word === word);
+      if (index >= 0) {
+        this.words[index].definition = response.data.definition;
+        this.words[index].example = response.data.example;
+        this.words[index].example_translation =
+          response.data.example_translation; // 新增的例句翻译
+        
+          this.currentWordIndex = index;
+      } else {
+        this.words.push({
+          word: response.data.word,
+          definition: response.data.definition,
+          example: response.data.example,
+          example_translation: response.data.example_translation, // 新增的例句翻译
+          
         });
-    },
-
-    nextWord() {
-      const currentWord = this.words[this.currentWordIndex].word;
-      if (!this.browsedWords.includes(currentWord)) {
-        // 如果当前单词不在已浏览单词列表中，就添加到列表
-        this.browsedWords.push(currentWord);
+        this.currentWordIndex = this.words.length - 1;
       }
-      this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
-      this.isDefinitionVisible = false;
-      this.$router.push(`/words/${this.words[this.currentWordIndex].word}`);
-      this.fetchWord(this.words[this.currentWordIndex].word);
-    },
+
+      console.log(this.words[index].word);
+      console.log(this.currentWordIndex);
+
+      // Only show definition if we got a valid response and we should show definition immediately.
+      if (response.data && response.data.word && showDefinitionImmediately) {
+        this.showDefinition(); // 显示搜索到的单词定义
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching word:", error);
+    });
+},
+
+searchWord() {
+  this.fetchWord(this.searchTerm, true); // Search should show definition immediately
+},
+
+nextWord() {
+  const currentWord = this.words[this.currentWordIndex].word;
+  if (!this.browsedWords.includes(currentWord)) {
+    // 如果当前单词不在已浏览单词列表中，就添加到列表
+    this.browsedWords.push(currentWord);
+  }
+  this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
+  this.isDefinitionVisible = false;
+  this.$router.push(`/words/${this.words[this.currentWordIndex].word}`);
+  this.fetchWord(this.words[this.currentWordIndex].word); // 'Next' should not show definition immediately
+},
+
 
     // ...
 
@@ -165,10 +176,7 @@ export default {
       this.fetchWord(word);
     },
 
-    searchWord() {
-      this.fetchWord(this.searchTerm);
-      this.showDefinition();
-    },
+    
     startCountdown() {
       this.focusLostCountdown = 5;
       this.countdownInterval = setInterval(() => {
