@@ -1,36 +1,58 @@
-
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 200px; /* 根据需要设置高度 */
-  font-size: 20px; /* 根据需要设置字体大小 */
-}
-
-.dots {
-  position: relative;
-  display: inline-block;
-  animation: loadingDots 1.5s infinite;
-}
-
-@keyframes loadingDots {
-  0%, 20% {
-    color: rgba(0,0,0,0);
-    text-shadow: .25em 0 0 rgba(0,0,0,0),
-                 .5em 0 0 rgba(0,0,0,0);
+.loading-wrap {
+    display: flex;
+    flex-direction: column;  /* 使用 column 来将内容垂直居中 */
+    justify-content: center;
+    align-items: center;
+    width: calc(30vw);  /* 去除内边距和边框的宽度 */
+    height: calc(46vh );  /* 去除内边距和边框的高度 */
+    position: relative; 
+    /* z-index: 1000; */
+    padding: 50px;  /* 加入与卡片相同的内边距 */
+    padding-bottom: 30px;
+    /* display: none; */
+    font-family: "Helvetica Neue", Arial, sans-serif;  /* 加入与卡片相同的字体 */
   }
-  40% {
-    color: #333;
-    text-shadow: .25em 0 0 rgba(0,0,0,0),
-                 .5em 0 0 rgba(0,0,0,0);
+  
+  
+  
+  .balls {
+    width: 4em;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
   }
-  60% {
-    text-shadow: .25em 0 0 #333,
-                 .5em 0 0 rgba(0,0,0,0);
+  
+  .balls div {
+    width: 0.8em;
+    height: 0.8em;
+    border-radius: 50%;
+    background-color: #4848FF;
   }
-  80%, 100% {
-    text-shadow: .25em 0 0 #333,
-                 .5em 0 0 #333;
+  
+  .balls div:nth-of-type(1) {
+    transform: translateX(-100%);
+    animation: left-swing 0.5s ease-in alternate infinite;
   }
-}
-
+  
+  .balls div:nth-of-type(3) {
+    transform: translateX(-95%);
+    animation: right-swing 0.5s ease-out alternate infinite;
+  }
+  
+  @keyframes left-swing {
+    50%, 100% {
+      transform: translateX(95%);
+    }
+  }
+  
+  @keyframes right-swing {
+    50% {
+      transform: translateX(-95%);
+    }
+  
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  

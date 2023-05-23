@@ -9,106 +9,123 @@ body {
 
 
 header {
-    background-color: #0066cc;
-    color: white;
-    padding: 20px;  /* 修改这里，原来是 padding: 20px; */
-    text-align: center;
+  background-color: #0066cc;
+  color: white;
+  padding: 20px;
+  /* 修改这里，原来是 padding: 20px; */
+  text-align: center;
 }
+
 header h1 {
-    margin-top: 0;
-    margin-bottom: 0;  /* 新增这一行 */
+  margin-top: 0;
+  margin-bottom: 0;
+  /* 新增这一行 */
 }
 
 
 footer {
-  background-color: #f2f2f2; /* 更改为与网页背景颜色相近的颜色 */
-  color: #888; /* 更改文本颜色为淡灰色 */
+  background-color: #f2f2f2;
+  /* 更改为与网页背景颜色相近的颜色 */
+  color: #888;
+  /* 更改文本颜色为淡灰色 */
   padding: 2px;
   line-height: 1.5;
   text-align: center;
 }
 
-  
+
 
 nav {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px; 
-    position: fixed;
-    width: 100%;
-    z-index: 1;
-  }
-  nav a {
-    color: white;  /* 修改这里，原来是 color: white; */
-    margin: 0 10px;
-    text-decoration: none;
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: fixed;
+  width: 100%;
+  z-index: 1;
+}
 
-  .sidebar {
-    position: fixed;
-    top: 120px;
-    bottom: 0;
-    width: calc(18vw);
-    overflow-y: auto;
-    overflow-x: scroll;
-    background-color: #f9f9f9;
-    padding: 0 20px 20px 20px; /* 上右下左的内边距，左侧内边距设为0 */
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    height: calc(100vh - 120px - 60px);
-    border-left: 5px solid #0066cc; /* 添加一个边框 */
-    transition: all 0.3s ease; /* 添加过渡效果 */
+nav a {
+  color: white;
+  /* 修改这里，原来是 color: white; */
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+
+.sidebar {
+  position: fixed;
+  top: 120px;
+  bottom: 0;
+  width: calc(18vw);
+  overflow-y: auto;
+  overflow-x: scroll;
+  background-color: #f9f9f9;
+  padding: 0 20px 20px 20px;
+  /* 上右下左的内边距，左侧内边距设为0 */
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  height: calc(100vh - 120px - 60px);
+  border-left: 5px solid #0066cc;
+  /* 添加一个边框 */
+  transition: all 0.3s ease;
+  /* 添加过渡效果 */
 }
 
 .sidebar h2 {
-    color: #333;
-    font-size: 24px;
-    margin-bottom: 20px;
-    text-transform: uppercase; /* 文字转为大写 */
-    letter-spacing: 2px; /* 增加字母间距 */
-    padding-left: 15px; /* 添加左侧内边距与列表项对齐 */
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  /* 文字转为大写 */
+  letter-spacing: 2px;
+  /* 增加字母间距 */
+  padding-left: 15px;
+  /* 添加左侧内边距与列表项对齐 */
 }
 
 .sidebar ul li {
-    margin-left: -30px; 
-    padding: 15px 30px 10px 15px; /* 上右下左的内边距，左内边距设为20px */
-    background-color: #fff;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    transition: background-color 0.3s ease; /* 添加过渡效果 */
-    width: 100%;
+  margin-left: -30px;
+  padding: 15px 30px 10px 15px;
+  /* 上右下左的内边距，左内边距设为20px */
+  background-color: #fff;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+  /* 添加过渡效果 */
+  width: 100%;
 }
 
 .sidebar ul li:hover {
-    background-color: #f0f0f0;
+  background-color: #f0f0f0;
 }
 
 .sidebar ul li::before {
-    content: '📚';
-    margin-right: 10px;
-    display: inline-block;
-    transform: rotate(20deg); /* 旋转图标 */
+  content: '📚';
+  margin-right: 10px;
+  display: inline-block;
+  transform: rotate(20deg);
+  /* 旋转图标 */
 }
 
 
 
-  
+
 
 .center-container {
-    margin-left: 10px;  /* 调整左边距 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; 
-    height: calc(100vh - 120px);
-    overflow-y: auto;
-    overflow-x: scroll;
-  }
-  
+  margin-left: 10px;
+  /* 调整左边距 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: calc(100vh - 120px);
+  overflow-y: auto;
+  overflow-x: scroll;
+}
+
 .center-container .search-bar input,
 .center-container .search-bar button {
   font-size: 18px;
@@ -126,18 +143,18 @@ nav {
 
 .search-bar {
   margin-top: 40px;
-  
+
 }
 
 .search-bar input {
-  padding: 15px; 
-  font-size: 18px; 
-  border: 2px solid #0066cc; 
+  padding: 15px;
+  font-size: 18px;
+  border: 2px solid #0066cc;
   border-radius: 5px;
   width: calc(28vw);
   transition: box-shadow 0.3s ease;
   background-color: #fff;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
 
 .search-bar input:focus {
@@ -156,12 +173,12 @@ nav {
   transition: background-color 0.3s ease;
 }
 
+
 .search-bar button:hover {
   background-color: #004999;
 }
-
-.card {
-    
+.word-card-placeholder
+{
   margin-top: 20px;
   background-color: #f0f8ff;
   color: #333333;
@@ -172,22 +189,44 @@ nav {
   padding: 20px;
   text-align: center;
   transition: background-color 0.5s ease, box-shadow 0.5s ease,
-    transform 0.2s ease; 
-  transition-delay: 5s; 
+    transform 0.2s ease;
+  transition-delay: 5s;
   font-family: "Helvetica Neue", Arial, sans-serif;
   border: 1px solid #cccccc;
-  position: relative; 
-  padding-bottom: 30px; 
+  position: relative;
+  padding-bottom: 30px;
+  user-select: none;
+  visibility: hidden; /* 使其不可见 */
+}
+.card {
+
+  margin-top: 20px;
+  background-color: #f0f8ff;
+  color: #333333;
+  width: calc(30vw);
+  height: calc(46vh);
+  border-radius: 20px;
+  box-shadow: 0px 10px 50px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  transition: background-color 0.5s ease, box-shadow 0.5s ease,
+    transform 0.2s ease;
+  transition-delay: 5s;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  border: 1px solid #cccccc;
+  position: relative;
+  padding-bottom: 30px;
+  user-select: none;
 }
 
 .countdown-message {
-    position: absolute;
-    bottom: 10px;
-    left: 0;
-    right: 0;
-    text-align: center;
-  }
-  
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+}
+
 
 .card:hover {
   box-shadow: 0 20px 40px 0 rgba(0, 0, 0, 0.2);
@@ -195,35 +234,38 @@ nav {
   background-color: #ffffe0;
   transition-delay: 0s;
 }
+
 .card-buttons {
-    position: absolute; /* 绝对定位 */
-    bottom: 54px; /* 焦点提示的高度 + 10px */
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: space-between;
+  position: absolute;
+  /* 绝对定位 */
+  bottom: 54px;
+  /* 焦点提示的高度 + 10px */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
 }
-  
-.card-buttons  .button {
-    flex-basis: 48%; 
-    padding: 10px;
-    border: none;
-    border-radius: 5px;
-    background-color: #0066cc;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 16px; 
-  }
-  
-  button:hover {
-    background-color: #004999;
-  }
-  
-  button:disabled {
-    background-color: #cccccc;
-  }
-  
+
+.card-buttons .button {
+  flex-basis: 48%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0066cc;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #004999;
+}
+
+button:disabled {
+  background-color: #cccccc;
+}
+
 
 footer {
   position: fixed;
@@ -232,26 +274,33 @@ footer {
 }
 
 .chat-box-container {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    display: none;
   }
-  @media screen and (max-width: 768px) {
-    .sidebar {
-      display: none;
-    }
-    .chat-box-container {
-      display: none;
-    }
-    .center-container {
-      margin-left: 0;
-    }
-    .card {
-      width: calc(80vw);
-      height: calc(70vh);
-    }
-    .search-bar input
-    {
-      width: calc(50vw);
-    }
+
+  .chat-box-container {
+    display: none;
   }
+
+  .center-container {
+    margin-left: 0;
+  }
+
+  .loading-wrap, 
+  .card {
+    width: calc(80vw);
+    height: calc(70vh);
+  }
+
+  .search-bar input {
+    width: calc(50vw);
+  }
+  
+
+}

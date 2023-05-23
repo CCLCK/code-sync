@@ -1,0 +1,55 @@
+.word-notebook {
+    position: fixed;
+    right: 0;
+    top: calc(19%);
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.15);
+    width: 23vw;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 10px;
+  }
+  
+  .word-notebook h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    transform: translateY(-10px); /* 向上移动10px */
+  }
+  
+  .word-notebook ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .word-notebook li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    
+  }
+  .word-notebook button {
+    background: #6c757d; /* 改为深灰色 */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    float: right;
+  }
+  
+  .word-notebook button:hover {
+    background: #5a6268; /* 悬停时颜色更深一些 */
+  }
+  @media screen and (max-width: 768px) {
+    .word-notebook {
+      
+      display: none;
+    }
+  }
+  @media (max-height: 600px) {
+    .word-notebook {
+      display: none;
+    }
+  }

@@ -1,6 +1,8 @@
 <template>
+    <div class="refresh-button-container">
     <button class="button" @click="debouncedRefresh">获取新的单词</button>
-  </template>
+</div>  
+</template>
   
   <script>
   import { debounce } from "lodash";
@@ -13,13 +15,14 @@
     },
     computed: {
       debouncedRefresh() {
-        return debounce(this.refresh, 3000, { leading: true, trailing: false });
+        return debounce(this.refresh, 1500, { leading: true, trailing: false });
       },
     },
   };
   </script>
   
   <style scoped>
+
   .button {
     /* 这里定义按钮的样式 */
     background-color: #00667c;

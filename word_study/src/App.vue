@@ -3,6 +3,9 @@
     <!-- 添加一个头部 -->
     <header>
       <h1>Word Journeyman</h1>
+      <div class="user-actions-container">
+        <user-actions></user-actions> <!-- 放在容器内 -->
+      </div>
       <nav>
         <a href="#"></a>
         <contact-us></contact-us>
@@ -32,7 +35,6 @@
         <p>{{ searchMessage }}</p>
         <!-- 新增一行来显示searchMessage -->
       </div>
-      <!-- 单词卡片 -->
       <word-card
   v-if="words.length > 0"
   :word="words[currentWordIndex]"
@@ -42,22 +44,37 @@
   :startCountdown="startCountdown"
   :stopCountdown="stopCountdown"
   :focusLostCountdown="focusLostCountdown"
+  @add-word-to-notebook="addWordToNotebook"
 >
 </word-card>
 
-<!-- 如果words数组为空，就显示一个加载中的提示 -->
-<div v-else class="loading">
-  数据加载中<span class="dots">...</span>
+<div v-else class="loading-wrap" >
+  <div class="balls">
+    <div></div>
+    <div></div>
+    <div></div>
+  </div>
 </div>
 
 
-      <refresh-button
+  <refresh-button
         class="refresh-button"
         @refresh="getNewWords"
       ></refresh-button>
 
+
+      
+      
       <!-- 聊天框组件 -->
       <chat-box></chat-box>
+
+      <button class="sidebar-button" @click="toggleNotebookVisibility">Toggle Word Notebook</button>
+      <word-notebook
+      :words="notebookWords"
+      :isVisible="isNotebookVisible"
+      @remove-word="removeWordFromNotebook"
+      @toggle-visibility="toggleNotebookVisibility"
+    ></word-notebook>
     </div>
 
     <!-- 添加一个底部 -->
@@ -69,17 +86,21 @@
 
 
 <script>
+import UserActions from './components/UserActions.vue'
 import ContactUs from "./components/ContactUs.vue"; // 确保这里的路径是正确的
 import ChatBox from "./components/ChatBox.vue"; // 引入你的聊天框组件
 import RefreshButton from "./components/RefreshButton.vue";
 import axios from "axios";
 import WordCard from "./components/WordCard.vue";
+import WordNotebook from "./components/WordNotebook.vue";
 export default {
   components: {
     "contact-us": ContactUs, // 在这里注册你的组件
     "chat-box": ChatBox, // 注册你的聊天框组件
     RefreshButton,
     WordCard,
+    WordNotebook,
+    "user-actions":UserActions
   },
   data() {
     return {
@@ -91,6 +112,10 @@ export default {
       countdownInterval: null, // 新增一个变量来存储倒计时的interval
       browsedWords: [], // 新增一个变量来存储已浏览的单词
       newWords: [], // 新的一组单词
+      isNotebookVisible: false,
+      notebookWords: [], // 生词本中的单词
+     
+     
     };
   },
   created() {
@@ -102,69 +127,89 @@ export default {
       .get("http://localhost:5300/random-words")
       .then((response) => {
         this.words = response.data;
+        
       })
       .catch((error) => {
         console.error("Error fetching random words:", error);
+       
       });
   },
   methods: {
+    toggleNotebookVisibility() {
+      this.isNotebookVisible = !this.isNotebookVisible;
+    },
+    removeWordFromNotebook(index) {
+  this.notebookWords.splice(index, 1);
+},
+
+    addWordToNotebook() {
+      console.log(1);
+    const currentWord = this.words[this.currentWordIndex].word;
+    if (!this.notebookWords.includes(currentWord)) {
+      // 如果当前单词不在生词本中，就添加到列表
+      this.notebookWords.push(currentWord);
+    }
+  },
     showDefinition() {
       this.isDefinitionVisible = true;
     },
     fetchWord(word, showDefinitionImmediately = false) {
-  axios
-    .get(`http://localhost:5100/words/${word}`)
-    .then((response) => {
-      console.log(response.data);
-      const index = this.words.findIndex((w) => w.word === word);
-      if (index >= 0) {
-        this.words[index].definition = response.data.definition;
-        this.words[index].example = response.data.example;
-        this.words[index].example_translation =
-          response.data.example_translation; // 新增的例句翻译
-        
-          this.currentWordIndex = index;
-      } else {
-        this.words.push({
-          word: response.data.word,
-          definition: response.data.definition,
-          example: response.data.example,
-          example_translation: response.data.example_translation, // 新增的例句翻译
-          
+      axios
+        .get(`http://localhost:5100/words/${word}`)
+        .then((response) => {
+          console.log(response.data);
+          const index = this.words.findIndex((w) => w.word === word);
+          if (index >= 0) {
+            this.words[index].definition = response.data.definition;
+            this.words[index].example = response.data.example;
+            this.words[index].example_translation =
+              response.data.example_translation; // 新增的例句翻译
+
+            this.currentWordIndex = index;
+          } else {
+            this.words.push({
+              word: response.data.word,
+              definition: response.data.definition,
+              example: response.data.example,
+              example_translation: response.data.example_translation, // 新增的例句翻译
+            });
+            this.currentWordIndex = this.words.length - 1;
+          }
+
+          // console.log(this.words[index].word);
+          // console.log(response.data.word);
+          console.log(response.data);
+          console.log(showDefinitionImmediately);
+          // Only show definition if we got a valid response and we should show definition immediately.
+          if (
+            response.data &&
+            response.data.word &&
+            showDefinitionImmediately
+          ) {
+            this.showDefinition(); // 显示搜索到的单词定义
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching word:", error);
         });
-        this.currentWordIndex = this.words.length - 1;
+    },
+
+    searchWord() {
+      this.fetchWord(this.searchTerm, true); // Search should show definition immediately
+    },
+
+    nextWord() {
+      
+      const currentWord = this.words[this.currentWordIndex].word;
+      if (!this.browsedWords.includes(currentWord)) {
+        // 如果当前单词不在已浏览单词列表中，就添加到列表
+        this.browsedWords.push(currentWord);
       }
-
-      // console.log(this.words[index].word);
-      // console.log(response.data.word);
-      console.log(response.data);
-      console.log(showDefinitionImmediately);
-      // Only show definition if we got a valid response and we should show definition immediately.
-      if (response.data && response.data.word && showDefinitionImmediately) {
-        this.showDefinition(); // 显示搜索到的单词定义
-      }
-    })
-    .catch((error) => {
-      console.error("Error fetching word:", error);
-    });
-},
-
-searchWord() {
-  this.fetchWord(this.searchTerm, true); // Search should show definition immediately
-},
-
-nextWord() {
-  const currentWord = this.words[this.currentWordIndex].word;
-  if (!this.browsedWords.includes(currentWord)) {
-    // 如果当前单词不在已浏览单词列表中，就添加到列表
-    this.browsedWords.push(currentWord);
-  }
-  this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
-  this.isDefinitionVisible = false;
-  this.$router.push(`/words/${this.words[this.currentWordIndex].word}`);
-  this.fetchWord(this.words[this.currentWordIndex].word); // 'Next' should not show definition immediately
-},
-
+      this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
+      this.isDefinitionVisible = false;
+      this.$router.push(`/words/${this.words[this.currentWordIndex].word}`);
+      this.fetchWord(this.words[this.currentWordIndex].word); // 'Next' should not show definition immediately
+    },
 
     // ...
 
@@ -177,7 +222,6 @@ nextWord() {
       this.fetchWord(word);
     },
 
-    
     startCountdown() {
       this.focusLostCountdown = 5;
       this.countdownInterval = setInterval(() => {
@@ -194,24 +238,28 @@ nextWord() {
     },
 
     getNewWords() {
+     
+      this.words = [];  // 清空单词列表
       axios
         .get("http://localhost:5300/random-words")
         .then((response) => {
           this.newWords = response.data;
           this.words = this.newWords; // 更新单词列表
+           
         })
         .catch((error) => {
           console.error("Error fetching new words:", error);
+          
         });
     },
   },
 };
-
 </script>
 
 
 <style scoped>
+
 @import url("../css/loading.css");
 @import url("../css/styles.css");
-
+@import url("../css/notebook-button.css");
 </style>
