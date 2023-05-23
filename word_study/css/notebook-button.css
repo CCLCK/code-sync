@@ -1,7 +1,7 @@
 .sidebar-button {
     position: fixed;
     right: 0;
-    top: 14%;
+    top: 24%;
     padding: 10px 20px; /* Adds some padding inside the button */
     background-color: #007BFF; /* Gives the button a blue background */
     color: white; /* Makes the button text white */

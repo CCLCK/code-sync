@@ -17,9 +17,9 @@
         <el-form-item label="密码">
           <el-input v-model="password" type="password" placeholder="密码" />
         </el-form-item>
-        <el-form-item>
+        <!-- <el-form-item>
           <el-checkbox v-model="rememberMe">记住我</el-checkbox>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" native-type="submit">登录</el-button>
         </el-form-item>
@@ -28,15 +28,16 @@
 
     <el-dialog title="注册" v-model="showRegister">
       <el-form @submit.prevent="register">
-        <el-form-item label="邮箱" :error="emailError">
+        <el-form-item label="邮箱&nbsp;&nbsp;&nbsp;&nbsp;" :error="emailError">
           <el-input v-model="email" placeholder="邮箱" @input="validateEmail" />
-          <el-button @click="sendVerificationCode">发送验证码</el-button>
+          
         </el-form-item>
-        <el-form-item label="密码">
+        <el-form-item label="密码&nbsp;&nbsp;&nbsp;&nbsp;">
           <el-input v-model="password" type="password" placeholder="密码" />
         </el-form-item>
         <el-form-item label="验证码">
           <el-input v-model="verificationCode" placeholder="验证码" />
+          <el-button @click="sendVerificationCode">发送验证码</el-button>
         </el-form-item>
         <el-form-item>
           <el-checkbox v-model="termsAccepted"
@@ -109,13 +110,18 @@ export default {
           if (response.data.message == "Logged in successfully") {
             this.user = this.email;
             this.showLogin = false;
+            localStorage.setItem('user_id', response.data.user_id);
           } else {
             this.$message.error(response.data.message);
           }
         })
         .catch((error) => {
           console.error("Error logging in:", error);
-          this.$message.error(error.response.data);
+          if (error.response) {
+    this.$message.error(error.response.data);
+  } else {
+    this.$message.error("An error occurred");
+  }
         });
     },
     register(event) {
@@ -132,6 +138,9 @@ export default {
             this.user = this.email;
             this.showRegister = false;
             this.$message.success("User registered successfully");
+            setTimeout(() => {
+      location.reload();
+    }, 1000);
           } else {
             this.$message.error(response.data.message);
           }
@@ -142,8 +151,9 @@ export default {
         });
     },
     logout() {
-      this.user = null;
-    },
+  this.user = null;
+  location.reload();
+},
   },
 };
 </script>

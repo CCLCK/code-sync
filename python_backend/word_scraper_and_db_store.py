@@ -2,7 +2,6 @@ import uuid
 import re
 import time
 import concurrent.futures
-
 import bs4
 import requests
 import nltk
@@ -10,19 +9,13 @@ from bs4 import BeautifulSoup
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql.ddl import DropTable
-
+from app import Word
 # 初始化Flask应用和数据库
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:%40ck159357@localhost/vocabularydb'
 db = SQLAlchemy(app)
 
 # 定义数据库模型
-class Word(db.Model):
-    id = db.Column(db.String(36), primary_key=True)  # 修改为字符串格式以存储UUID
-    word = db.Column(db.String(255), unique=True, nullable=False)
-    definition = db.Column(db.String(255), nullable=False)
-    example = db.Column(db.String(255), nullable=False)
-    example_translation = db.Column(db.String(255), nullable=True)
 
 # 创建应用上下文
 with app.app_context():

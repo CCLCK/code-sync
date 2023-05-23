@@ -74,6 +74,7 @@
       :isVisible="isNotebookVisible"
       @remove-word="removeWordFromNotebook"
       @toggle-visibility="toggleNotebookVisibility"
+      @updateWords="updateWords"
     ></word-notebook>
     </div>
 
@@ -135,21 +136,61 @@ export default {
       });
   },
   methods: {
-    toggleNotebookVisibility() {
+    
+    updateWords(newWords) {
+    this.notebookWords = newWords;
+  },
+    async toggleNotebookVisibility() {
       this.isNotebookVisible = !this.isNotebookVisible;
+      try {
+        console.log('111');
+        const userId = localStorage.getItem('user_id');
+        const response = await axios.get('http://localhost:5500/api/user/words', {
+          params: { user_id: userId }
+        });
+        if (response.data.status === 'success') {
+          this.notebookWords = response.data.words;
+        } else {
+          console.error(response.data.message);
+        }
+      } catch (error) {
+        console.error(error);
+      }
     },
+    
     removeWordFromNotebook(index) {
   this.notebookWords.splice(index, 1);
 },
 
-    addWordToNotebook() {
-      console.log(1);
-    const currentWord = this.words[this.currentWordIndex].word;
-    if (!this.notebookWords.includes(currentWord)) {
-      // 如果当前单词不在生词本中，就添加到列表
-      this.notebookWords.push(currentWord);
-    }
-  },
+async addWordToNotebook() {
+	const currentWord = this.words[this.currentWordIndex].word;
+	if (!this.notebookWords.includes(currentWord)) {
+		// 如果当前单词不在生词本中，就添加到列表
+		this.notebookWords.push(currentWord);
+
+		try {
+			// 向后端发送添加生词的请求
+			const userId = localStorage.getItem('user_id'); // 获取存储在localStorage中的用户ID
+			const response = await axios.post('http://localhost:5500/api/user/add_word', {
+				user_id: userId,
+				word: currentWord
+			});
+
+			if (response.data.status !== 'success') {
+				// 如果后端返回的状态不是'success'，则将单词从生词本中移除，并打印错误消息
+				const index = this.notebookWords.indexOf(currentWord);
+				if (index > -1) {
+					this.notebookWords.splice(index, 1);
+				}
+				console.error(response.data.message);
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+},
+
+
     showDefinition() {
       this.isDefinitionVisible = true;
     },
@@ -254,6 +295,10 @@ export default {
     },
   },
 };
+window.addEventListener('beforeunload', function() {
+  localStorage.clear();
+});
+
 </script>
 
 
