@@ -85,7 +85,7 @@ export default {
         this.$message.success("Verification code sent successfully");
       } catch (error) {
         console.error("Error sending verification code:", error);
-        this.$message.error("Error sending verification code");
+        this.$message.error("Email already registered");
       }
     },
     validateEmail() {
@@ -115,7 +115,7 @@ export default {
         })
         .catch((error) => {
           console.error("Error logging in:", error);
-          this.$message.error("Error logging in");
+          this.$message.error(error.response.data);
         });
     },
     register(event) {
