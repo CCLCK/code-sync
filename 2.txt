@@ -1,0 +1,172 @@
+<template>
+  <div id="app">
+    <!-- 添加一个头部 -->
+    <header>
+      <h1>我的单词学习网站</h1>
+      <nav>
+        <a href="#">首页</a>
+        <a href="#">关于我们</a>
+        <a href="#">联系我们</a>
+      </nav>
+    </header>
+
+    <!-- 搜索栏和卡片 -->
+    <div class="center-container">
+      <!-- 搜索栏 -->
+      <div class="search-bar">
+        <input v-model="searchTerm" type="text" placeholder="搜索单词...">
+        <button @click="searchWord">搜索</button>
+      </div>
+
+      <!-- 单词卡片 -->
+      <div id="card" class="card">
+        <h1>{{ words[currentWordIndex].word }}</h1>
+        <button @click="showDefinition" :disabled="isDefinitionVisible">显示定义</button>
+        <p v-show="isDefinitionVisible">{{ words[currentWordIndex].definition }}</p>
+        <button @click="nextWord">下一个单词</button>
+      </div>
+    </div>
+
+    <!-- 添加一个底部 -->
+    <footer>
+      <p>©2023 我的单词学习网站</p>
+    </footer>
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      words: [
+        { word: 'apple', definition: '一种常见的水果' },
+        { word: 'banana', definition: '一种常见的黄色水果' },
+        { word: 'cat', definition: '一种家养的小型猫科动物' },
+      ],
+      currentWordIndex: 0,
+      isDefinitionVisible: false,
+      searchTerm: '',
+    };
+  },
+  methods: {
+    showDefinition() {
+      this.isDefinitionVisible = true;
+    },
+    nextWord() {
+      this.currentWordIndex = (this.currentWordIndex + 1) % this.words.length;
+      this.isDefinitionVisible = false;
+    },
+    searchWord() {
+      const index = this.words.findIndex(word => word.word === this.searchTerm);
+      if (index !== -1) {
+        this.currentWordIndex = index;
+        this.isDefinitionVisible = false;
+      } else {
+        alert('未找到该单词');
+      }
+    },
+  },
+};
+</script>
+
+<style scoped>
+/* 添加一些样式 */
+header, footer {
+  padding: 20px;
+  text-align: center;
+  background-color: #f0f0f0;
+}
+
+nav a {
+  margin: 0 10px;
+  text-decoration: none;
+  color: #333;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  width: 400px;
+}
+
+.search-bar button {
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+}
+body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+}
+
+.center-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.card {
+  background-color: white;
+  color: #333;
+  width: 500px;
+  height: 300px;
+  border-radius: 15px;
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  transition: box-shadow 0.3s ease;
+  position: relative;
+  margin: 20px;
+}
+
+.card:hover {
+  box-shadow: 0 10px 20px 0 rgba(0,0,0,0.4);
+}
+
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007BFF;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #CCCCCC;
+}
+
+.card.sliding {
+  animation: slide 1s ease-in-out forwards;
+}
+
+@keyframes slide {
+  100% { transform: translateX(100%); }
+}
+/* 其他样式... */
+</style>
