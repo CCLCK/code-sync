@@ -125,7 +125,7 @@ export default {
       this.jumpToWord(word);
     }
     axios
-      .get("http://localhost:5300/random-words")
+      .get("http://localhost:5800/random-words")
       .then((response) => {
         this.words = response.data;
         
@@ -282,7 +282,7 @@ async addWordToNotebook() {
      
       this.words = [];  // 清空单词列表
       axios
-        .get("http://localhost:5300/random-words")
+        .get("http://localhost:5800/random-words")
         .then((response) => {
           this.newWords = response.data;
           this.words = this.newWords; // 更新单词列表
